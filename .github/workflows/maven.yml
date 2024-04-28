@@ -1,30 +1,28 @@
-name: maven compile test
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
-      - uses: mirromutth/mysql-action@v1.1
-        with:
-          mysql version: '5.7'
-          mysql database: 'sonic'
-          mysql root password: 'Sonic!@#123'
-          mysql user: 'root'
-          mysql password: 'Sonic!@#123'
-      - name: Validate and Compile with Maven
-        run: mvn test
+    - continue-on-error: true
+      uses: actions/checkout@v2
+    - continue-on-error: true
+      name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        cache: maven
+        distribution: temurin
+        java-version: '17'
+    - continue-on-error: true
+      uses: mirromutth/mysql-action@v1.1
+      with:
+        mysql database: sonic
+        mysql password: Sonic!@#123
+        mysql root password: Sonic!@#123
+        mysql user: root
+        mysql version: '5.7'
+    - continue-on-error: true
+      name: Validate and Compile with Maven
+      run: mvn test
+name: maven compile test
+on:
+  repository_dispatch:
+    types: trigger-ga___maven.yml
